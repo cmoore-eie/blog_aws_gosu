@@ -1,13 +1,13 @@
-package acc.reference_data.functions
+package acc.aws_reference_data.functions
 
 uses acc.user_function.ProcessDefinitionParam_Ext
 uses acc.user_function.ProcessDefinition_Ext
 uses acc.user_function.ProcessResultType_Ext
 uses acc.user_function.ProcessResult_Ext
 uses acc.user_function.functions.AbstractFunction_Ext
-uses blog.userfunction.sdk.ApiClient
-uses blog.userfunction.sdk.api.GenderApi
-uses blog.userfunction.sdk.model.Gender
+uses blog.aws.referencedata.sdk.ApiClient
+uses blog.aws.referencedata.sdk.api.DefaultApi
+uses blog.aws.referencedata.sdk.model.Gender
 
 class ManageGender_Ext  extends AbstractFunction_Ext {
 
@@ -17,8 +17,8 @@ class ManageGender_Ext  extends AbstractFunction_Ext {
 
   public function readGender() : ProcessResult_Ext {
     var key = StringValue(1)
-    var api = new ApiClient().buildClient(GenderApi)
-    var response = api.genderRead(key)
+    var api = new ApiClient().buildClient(DefaultApi)
+    var response = api.genderGet(key)
     Result.ValueObject = response
     return Result
   }
@@ -26,22 +26,22 @@ class ManageGender_Ext  extends AbstractFunction_Ext {
   public function writeGender() : ProcessResult_Ext {
     var key = StringValue(1)
     var gender = ObjectValue(2) as Gender
-    var api = new ApiClient().buildClient(GenderApi)
-    var response = api.genderUpdate(key, gender)
+    var api = new ApiClient().buildClient(DefaultApi)
+    var response = api.genderPut(gender)
     Result.ValueObject = response
     return Result
   }
 
   public function listGender() : ProcessResult_Ext {
-    var api = new ApiClient().buildClient(GenderApi)
-    var response = api.genderList()
+    var api = new ApiClient().buildClient(DefaultApi)
+    var response = api.genderAllGet() as List
     Result.ValueList = response
     return Result
   }
 
   public function deleteGender() : ProcessResult_Ext {
     var key = StringValue(1)
-    var api = new ApiClient().buildClient(GenderApi)
+    var api = new ApiClient().buildClient(DefaultApi)
     api.genderDelete(key)
     return Result
   }

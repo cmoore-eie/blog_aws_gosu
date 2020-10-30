@@ -1,13 +1,13 @@
-package acc.reference_data.functions
+package acc.aws_reference_data.functions
 
 uses acc.user_function.ProcessDefinitionParam_Ext
 uses acc.user_function.ProcessDefinition_Ext
 uses acc.user_function.ProcessResultType_Ext
 uses acc.user_function.ProcessResult_Ext
 uses acc.user_function.functions.AbstractFunction_Ext
-uses blog.userfunction.sdk.ApiClient
-uses blog.userfunction.sdk.api.BranchApi
-uses blog.userfunction.sdk.model.Branch
+uses blog.aws.referencedata.sdk.ApiClient
+uses blog.aws.referencedata.sdk.api.DefaultApi
+uses blog.aws.referencedata.sdk.model.Branch
 
 class ManageBranch_Ext extends AbstractFunction_Ext {
 
@@ -17,31 +17,36 @@ class ManageBranch_Ext extends AbstractFunction_Ext {
 
   public function readBranch() : ProcessResult_Ext {
     var key = StringValue(1)
-    var api = new ApiClient().buildClient(BranchApi)
-    var response = api.branchRead(key)
+    var api = new ApiClient().buildClient(DefaultApi)
+    var response = api.branchGet(key)
     Result.ValueObject = response
     return Result
   }
 
   public function writeBranch() : ProcessResult_Ext {
+    var response : Branch
     var key = StringValue(1)
-    var gender = ObjectValue(2) as Branch
-    var api = new ApiClient().buildClient(BranchApi)
-    var response = api.branchUpdate(key, gender)
+    var branch = ObjectValue(2) as Branch
+    var api = new ApiClient().buildClient(DefaultApi)
+    if(branch.UUID == null) {
+      response = api.branchPost(branch) as Branch
+    } else {
+      response = api.branchPut(branch) as Branch
+    }
     Result.ValueObject = response
     return Result
   }
 
   public function listBranch() : ProcessResult_Ext {
-    var api = new ApiClient().buildClient(BranchApi)
-    var response = api.branchList()
-    Result.ValueList = response
+    var api = new ApiClient().buildClient(DefaultApi)
+    var response = api.branchAllGet()
+    Result.ValueList = response as List
     return Result
   }
 
   public function deleteBranch() : ProcessResult_Ext {
     var key = StringValue(1)
-    var api = new ApiClient().buildClient(BranchApi)
+    var api = new ApiClient().buildClient(DefaultApi)
     api.branchDelete(key)
     return Result
   }

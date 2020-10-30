@@ -1,13 +1,13 @@
-package acc.reference_data.functions
+package acc.aws_reference_data.functions
 
 uses acc.user_function.ProcessDefinitionParam_Ext
 uses acc.user_function.ProcessDefinition_Ext
 uses acc.user_function.ProcessResultType_Ext
 uses acc.user_function.ProcessResult_Ext
 uses acc.user_function.functions.AbstractFunction_Ext
-uses blog.userfunction.sdk.ApiClient
-uses blog.userfunction.sdk.api.DealerApi
-uses blog.userfunction.sdk.model.Dealer
+uses blog.aws.referencedata.sdk.ApiClient
+uses blog.aws.referencedata.sdk.api.DefaultApi
+uses blog.aws.referencedata.sdk.model.Dealer
 
 class ManageDealer_Ext extends AbstractFunction_Ext {
 
@@ -17,31 +17,31 @@ class ManageDealer_Ext extends AbstractFunction_Ext {
 
   public function readDealer() : ProcessResult_Ext {
     var key = StringValue(1)
-    var api = new ApiClient().buildClient(DealerApi)
-    var response = api.dealerRead(key)
-    Result.ValueObject = response
+    var api = new ApiClient().buildClient(DefaultApi)
+/*    var response = api.dealerGet(key)
+    Result.ValueObject = response*/
     return Result
   }
 
   public function writeDealer() : ProcessResult_Ext {
     var key = StringValue(1)
     var gender = ObjectValue(2) as Dealer
-    var api = new ApiClient().buildClient(DealerApi)
-    var response = api.dealerUpdate(key, gender)
+    var api = new ApiClient().buildClient(DefaultApi)
+    var response = api.dealerPost(gender)
     Result.ValueObject = response
     return Result
   }
 
   public function listDealer() : ProcessResult_Ext {
-    var api = new ApiClient().buildClient(DealerApi)
-    var response = api.dealerList()
+    var api = new ApiClient().buildClient(DefaultApi)
+    var response = api.dealerAllGet() as List
     Result.ValueList = response
     return Result
   }
 
   public function deleteDealer() : ProcessResult_Ext {
     var key = StringValue(1)
-    var api = new ApiClient().buildClient(DealerApi)
+    var api = new ApiClient().buildClient(DefaultApi)
     api.dealerDelete(key)
     return Result
   }
